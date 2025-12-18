@@ -4,3 +4,23 @@
  */
 
 @import 'tailwindcss';
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+
+    .text-9xl {
+        font-size: 2rem;
+        line-height: var(--text-9xl--line-height); /* 1 */
+    }
+
+
+    .shop-name-style {
+        @apply text-black text-9xl font-normal font-['GT America'];
+    }
+
+
+}

@@ -34,7 +34,7 @@ export function Header({
         <div className="self-stretch inline-flex justify-evenly items-center w-full">
           <div className="self-stretch inline-flex justify-between items-center w-full">
             {shop.name.split(' ').map((word, index) => (
-              <span key={index} className="text-black text-4xl font-normal font-['GT_America']">
+              <span key={index} className="text-black text-6xl font-normal font-['GT America']">
       {word}
     </span>
             ))}
