@@ -13,9 +13,11 @@ export function Footer({
   header,
   publicStoreDomain,
 }: FooterProps) {
+
   return (
     <Suspense>
       <Await resolve={footerPromise}>
+
         {(footer) => (
           <footer className="footer">
             {footer?.menu && header.shop.primaryDomain?.url && (

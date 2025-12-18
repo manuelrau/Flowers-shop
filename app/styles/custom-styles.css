@@ -1,0 +1,11 @@
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .shop-name-style {
+        @apply text-black text-4xl font-normal font-['GT_America'];
+    }
+}

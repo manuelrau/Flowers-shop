@@ -7,6 +7,10 @@ import {
 } from '@shopify/hydrogen';
 import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
+import '../styles/tailwind.css';
+
+
+
 
 interface HeaderProps {
   header: HeaderQuery;
@@ -26,16 +30,26 @@ export function Header({
   const {shop, menu} = header;
   return (
     <header className="header">
-      <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <strong>{shop.name}</strong>
+      <NavLink className="w-full" prefetch="intent" to="/" style={activeLinkStyle} end>
+        <div className="self-stretch inline-flex justify-evenly items-center w-full">
+          <div className="self-stretch inline-flex justify-between items-center w-full">
+            {shop.name.split(' ').map((word, index) => (
+              <span key={index} className="text-black text-4xl font-normal font-['GT_America']">
+      {word}
+    </span>
+            ))}
+          </div>
+        </div>
+
       </NavLink>
+      {/*
       <HeaderMenu
         menu={menu}
         viewport="desktop"
         primaryDomainUrl={header.shop.primaryDomain.url}
         publicStoreDomain={publicStoreDomain}
       />
-      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+      {/*<HeaderCtas isLoggedIn={isLoggedIn} cart={cart} /> */}
     </header>
   );
 }
