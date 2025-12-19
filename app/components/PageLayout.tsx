@@ -15,6 +15,12 @@ import {
 } from '~/components/SearchFormPredictive';
 import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
 
+type NavbarItem = {
+  label: string;
+  openInNewTab?: boolean;
+  link?: any[]; // kannst du später genauer tippen
+};
+
 interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
   footer: Promise<FooterQuery | null>;
@@ -22,16 +28,24 @@ interface PageLayoutProps {
   isLoggedIn: Promise<boolean>;
   publicStoreDomain: string;
   children?: React.ReactNode;
-}
+  navbar?: {items?: NavbarItem[]};
+  }
+
+
 
 export function PageLayout({
+
   cart,
   children = null,
   footer,
   header,
   isLoggedIn,
   publicStoreDomain,
-}: PageLayoutProps) {
+  navbar
+}: PageLayoutProps)
+
+{
+  console.log('### PAGELAYOUT navbar ###', navbar); // Browser-Konsole
   return (
     <Aside.Provider>
       <CartAside cart={cart} />
@@ -43,6 +57,7 @@ export function PageLayout({
           cart={cart}
           isLoggedIn={isLoggedIn}
           publicStoreDomain={publicStoreDomain}
+          navbarItems={navbar?.items ?? []}
         />
       )}
       <main>{children}</main>

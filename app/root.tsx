@@ -17,6 +17,9 @@ import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
 import {PageLayout} from './components/PageLayout';
+import {sanityClient} from '~/lib/sanity/client';
+import {navbarQuery} from '~/lib/sanity/navbarQuery';
+
 
 export type RootLoader = typeof loader;
 
@@ -77,7 +80,7 @@ export async function loader(args: Route.LoaderArgs) {
 
   return {
     ...deferredData,
-    ...criticalData,
+    ...criticalData, // enthält {header, navbar}
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
     shop: getShopAnalytics({
       storefront,
@@ -101,17 +104,18 @@ export async function loader(args: Route.LoaderArgs) {
 async function loadCriticalData({context}: Route.LoaderArgs) {
   const {storefront} = context;
 
-  const [header] = await Promise.all([
+  const [header, navbar] = await Promise.all([
     storefront.query(HEADER_QUERY, {
       cache: storefront.CacheLong(),
       variables: {
         headerMenuHandle: 'main-menu', // Adjust to your header menu handle
       },
     }),
+    sanityClient.fetch(navbarQuery),
     // Add other queries here, so that they are loaded in parallel
   ]);
-
-  return {header};
+  console.log('### NAVBAR FROM SANITY ###', JSON.stringify(navbar, null, 2));
+  return {header, navbar};
 }
 
 /**

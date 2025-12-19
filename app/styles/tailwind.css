@@ -19,7 +19,7 @@
 
 
     .shop-name-style {
-        @apply text-black text-9xl font-normal font-['GT America'];
+        @apply text-black text-9xl font-normal;
     }
 
 

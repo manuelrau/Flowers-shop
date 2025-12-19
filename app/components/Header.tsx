@@ -1,3 +1,5 @@
+'use client';
+
 import {Suspense} from 'react';
 import {Await, NavLink, useAsyncValue} from 'react-router';
 import {
@@ -8,16 +10,25 @@ import {
 import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
 import '../styles/tailwind.css';
+import {useEffect, useState} from 'react';
+import {sanityClient} from '~/lib/sanity/client';
+import {navbarQuery} from '~/lib/sanity/navbarQuery';
 
 
-
+type NavbarItem = {
+  label: string;
+  openInNewTab?: boolean;
+  link?: any[]; // später gern genauer typisieren
+};
 
 interface HeaderProps {
   header: HeaderQuery;
   cart: Promise<CartApiQueryFragment | null>;
   isLoggedIn: Promise<boolean>;
   publicStoreDomain: string;
+  navbarItems: NavbarItem[];
 }
+
 
 type Viewport = 'desktop' | 'mobile';
 
@@ -26,8 +37,11 @@ export function Header({
   isLoggedIn,
   cart,
   publicStoreDomain,
+  navbarItems,
 }: HeaderProps) {
   const {shop, menu} = header;
+
+
   return (
     <header className="header">
       <NavLink className="w-full" prefetch="intent" to="/" style={activeLinkStyle} end>
@@ -35,6 +49,7 @@ export function Header({
           <div className="self-stretch inline-flex justify-between items-center w-full">
             {shop.name.split(' ').map((word, index) => (
               <span key={index} className="text-black text-6xl font-normal font-['GT America']">
+
       {word}
     </span>
             ))}
@@ -42,6 +57,7 @@ export function Header({
         </div>
 
       </NavLink>
+      <HeaderMenuFromSanity items={navbarItems} />
       {/*
       <HeaderMenu
         menu={menu}
@@ -53,6 +69,60 @@ export function Header({
     </header>
   );
 }
+function HeaderMenuFromSanity({items}: {items: NavbarItem[]}) {
+  const {close} = useAside();
+
+  return (
+    <nav className="header-menu-desktop" role="navigation">
+      {items?.map((item, idx) => {
+
+        const navLink = item.link?.[0]; // wegen max(1) in deinem Schema
+
+        if (!navLink) return null;
+
+        // externe Links
+        if (navLink._type === 'externalLink') {
+          return (
+            <a
+              key={idx}
+              href={navLink.url}
+              target={item.openInNewTab ? '_blank' : '_self'}
+              rel="noreferrer"
+              className="header-menu-item"
+              onClick={close}
+            >
+              <p>Test</p>
+              {item.label}
+            </a>
+          );
+        }
+
+        // interne Links (z. B. pages, products)
+        if (navLink._type === 'internalLink' && navLink.internalReference?.slug) {
+          const url = `/${navLink.internalReference.slug}`;
+
+          return (
+            <NavLink
+              key={idx}
+              to={url}
+              className="header-menu-item"
+              prefetch="intent"
+              style={activeLinkStyle}
+              onClick={close}
+            >
+              <p>Test2</p>
+              {item.label}
+            </NavLink>
+          );
+        }
+
+        return null;
+      })}
+    </nav>
+  );
+}
+
+
 
 export function HeaderMenu({
   menu,
